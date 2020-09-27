@@ -1,0 +1,6 @@
+[run]
+include = app/*
+branch = True
+
+[html]
+directory = test-reports/cov/
