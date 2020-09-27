@@ -3,6 +3,7 @@ version: 2.1
 
 orbs:
   python: circleci/python@1.1.0
+#  codecov: codecov/codecov@1.0.2
 
 jobs:
   build-and-test:
@@ -22,6 +23,8 @@ jobs:
       - store_artifacts:
           path: test-reports
           destination: reports
+#      - codecov/upload:
+#          file: 0/reports/junit.xml
 
 workflows:
   main:
