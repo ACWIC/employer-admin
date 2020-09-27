@@ -1,19 +1,27 @@
 version: 2.1
 
+
 orbs:
-  python: circleci/python@0.2.1
+  python: circleci/python@1.1.0
 
 jobs:
   build-and-test:
     executor: python/default
     steps:
       - checkout
-      - python/load-cache
-      - python/install-deps
-      - python/save-cache
+      - python/install-packages:
+          pkg-manager: pip
+          pip-dependency-file: requirements/uvicorn.txt
       - run:
-          command: ./manage.py test
+          command: |
+            mkdir test-results
+            python -m pytest
           name: Test
+      - store_test_results:
+          path: test-results
+      - store_artifacts:
+          path: test-reports
+          destination: reports
 
 workflows:
   main:
