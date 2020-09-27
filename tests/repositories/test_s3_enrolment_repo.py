@@ -27,18 +27,18 @@ def test_save_enrolment(boto_client, uuid4):
     Ensure the S3Enrolmentrepo returns an object with OK data
     and that an appropriate boto3 put call was made.
     """
-    uuid4.return_value = UUID('1dad3dd8-af28-4e61-ae23-4c93a456d10e')
+    fixed_uuid_str = '1dad3dd8-af28-4e61-ae23-4c93a456d10e'
+    uuid4.return_value = UUID(fixed_uuid_str)
     repo = S3EnrolmentRepo()
-    environ['ENROLMENT_AUTHORISATION_BUCKET'] = 'some-bucket'
-    enrolment = repo.save_enrolment(course_id='123', student_id='abc')
+    environ['ENROLMENT_BUCKET'] = 'some-bucket'
+    enrolment = repo.save_enrolment(enrolment_id='look-at-my-enrolment-id')
 
-    # TODO: assert enrollment is of the appropriate domain model type
-    assert enrolment.course_id == '123'
-    assert enrolment.student_id == 'abc'
-    assert str(enrolment.uuid) == '1dad3dd8-af28-4e61-ae23-4c93a456d10e'
+    # TODO: mock datetime.datetime.now and assert that too
+    assert str(enrolment.enrolment_id) == 'look-at-my-enrolment-id'
+    assert str(enrolment.key) == fixed_uuid_str
 
     boto_client.return_value.put_object.assert_called_once_with(
         Body=bytes(enrolment.json(), 'utf-8'),
-        Key=f'{enrolment.uuid}.json',  # NOQA
+        Key=f'{enrolment.enrolment_id}.json',  # NOQA
         Bucket='some-bucket'
     )

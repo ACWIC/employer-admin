@@ -6,7 +6,7 @@ from app.responses import ResponseSuccess
 
 
 class CreateNewEnrolment(BaseModel):
-    enrolment_repo: EnrolmentRepo
+    enrolment_repo: EnrolmentRepo  # class attribute (singleton)
 
     class Config:
         # Pydantic will complain if something (enrolment_repo) is defined
@@ -16,11 +16,10 @@ class CreateNewEnrolment(BaseModel):
 
     def execute(self, request: NewEnrolmentRequest):
         try:
-            enrolment_authorisation = self.enrolment_repo.save_enrolment(
-                request.course_id,
-                request.student_id
+            enrolment = self.enrolment_repo.save_enrolment(
+                enrolment_id=request.enrolment_id,
             )
         except Exception as e:  # noqa - TODO: handle specific failure types
             return ResponseFailure.build_from_resource_error(message=e)
 
-        return ResponseSuccess(value=enrolment_authorisation)
+        return ResponseSuccess(value=enrolment)
