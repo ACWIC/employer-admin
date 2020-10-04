@@ -24,7 +24,7 @@ jobs:
           path: test-reports
           destination: reports
       - codecov/upload:
-          file: 0/reports/junit.xml
+          file: test-reports/coverage.xml
 
 workflows:
   main:
