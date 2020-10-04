@@ -1,3 +1,5 @@
+[![codecov](https://codecov.io/gh/ACWIC/employer-admin/branch/master/graph/badge.svg?token=YB6L7D2H70)](https://codecov.io/gh/ACWIC/employer-admin)
+
 # Aged Care Provider Admin API
 
 This is a FastAPI app that is built to run on AWS Lambda via the API Gateway.
