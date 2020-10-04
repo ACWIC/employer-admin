@@ -64,7 +64,8 @@ See the configuration in .envs/.local/.sls to determine what buckets are needed.
 
 ## Tests
 
-Tests are run with pytest, which can be executed with the following command:
+Tests are run with pytest, which can be executed with the shortcut make command:
 ```
-docker-compose run --rm app python -m pytest
+make test
 ```
+
