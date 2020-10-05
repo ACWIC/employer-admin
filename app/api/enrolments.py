@@ -2,6 +2,7 @@ from fastapi import APIRouter
 from app.requests.enrolment_requests import NewEnrolmentRequest
 from app.repositories.s3_enrolment_repo import S3EnrolmentRepo
 from app.use_cases.create_new_enrolment import CreateNewEnrolment
+from app.use_cases.create_new_enrolment import GetEnrolmentByID
 
 
 router = APIRouter()
@@ -38,5 +39,5 @@ def get_enrolment(enrolment_id: str):  # TODO: typing, return enrolment summary
     * use these message-types to calculate the current state
     '''
     use_case = GetEnrolmentByID(enrolment_repo=enrolment_repo)
-    response = use_case.execute(inputs)
+    response = use_case.execute(enrolment_id)
     return response
