@@ -42,3 +42,6 @@ class S3EnrolmentRepo(EnrolmentRepo):
         )
 
         return enrl
+
+    def get_enrolment(self, enrolment_id: str):
+        return {}

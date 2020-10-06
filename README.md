@@ -34,9 +34,9 @@ everything required for the components to work together.
 docker-compose up
 ```
 
-The service will be available on port 8081
+The service will be available on port 8082
 
-Open `localhost:8081/docs` for swagger documentation.
+Open `localhost:8082/docs` for swagger documentation.
 
 ## Configuration:
 
