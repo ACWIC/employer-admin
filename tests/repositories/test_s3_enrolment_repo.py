@@ -42,3 +42,10 @@ def test_save_enrolment(boto_client, uuid4):
         Key=f'{enrolment.enrolment_id}.json',  # NOQA
         Bucket='some-bucket'
     )
+
+
+def test_get_enrolment():
+    """
+    Ensure the S3Enrolmentrepo returns an object with OK data
+    """
+    pass
