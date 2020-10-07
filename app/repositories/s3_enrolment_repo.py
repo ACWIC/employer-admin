@@ -2,6 +2,7 @@ import os
 import boto3
 from datetime import datetime
 import uuid
+import json
 from typing import Any
 from app.repositories.enrolment_repo import EnrolmentRepo
 from app.domain.entities.enrolment import Enrolment
@@ -44,4 +45,10 @@ class S3EnrolmentRepo(EnrolmentRepo):
         return enrl
 
     def get_enrolment(self, enrolment_id: str):
-        return {}
+
+        obj = self.s3.get_object(
+            Key=f'{enrolment_id}.json',
+            Bucket=os.environ['ENROLMENT_BUCKET']
+        )
+        enrl = Enrolment(**json.loads(obj["Body"].read().decode()))
+        return enrl
