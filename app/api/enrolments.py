@@ -3,7 +3,7 @@ from fastapi import APIRouter
 from app.repositories.s3_enrolment_repo import S3EnrolmentRepo
 from app.requests.enrolment_requests import NewEnrolmentRequest
 from app.use_cases.create_new_enrolment import CreateNewEnrolment
-from app.use_cases.get_enrolment_by_id import GetEnrolmentByID
+from app.use_cases.get_enrolment import GetEnrolmentByID
 
 router = APIRouter()
 enrolment_repo = S3EnrolmentRepo()
@@ -27,8 +27,9 @@ def create_enrolment(inputs: NewEnrolmentRequest):
 
 
 @router.get("/enrolments/{enrolment_id}")
-def get_enrolment(enrolment_id: str):  # TODO: typing, return enrolment summary
-    """Return the current status of the given enrolment
+def get_enrolment_by_id(enrolment_id: str):  # TODO: typing, return enrolment summary
+    """ Return the current status of the given enrolment
+
 
     This relies on certain callbacks
     with payloads that describe state-changes in the enrolment.
