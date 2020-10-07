@@ -8,6 +8,7 @@ of the appropriate type.
 from os import environ
 from uuid import UUID
 from unittest.mock import patch
+from unittest.mock import MagicMock
 from app.repositories.s3_enrolment_repo import S3EnrolmentRepo
 
 
@@ -55,13 +56,15 @@ def test_get_enrolment(boto_client, uuid4):
     uuid4.return_value = UUID(fixed_uuid_str)
     repo = S3EnrolmentRepo()
     environ['ENROLMENT_BUCKET'] = 'some-bucket'
-    enrolment = repo.get_enrolment(enrolment_id='look-at-my-enrolment-id')
+    with patch("json.loads", MagicMock(side_effect=[
+        {"created": "2020-10-07T15:37:16.727308", "enrolment_id": "look-at-my-enrolment-id", "key": fixed_uuid_str}])
+               ):
+        enrolment = repo.get_enrolment(enrolment_id='look-at-my-enrolment-id')
 
     assert str(enrolment.enrolment_id) == 'look-at-my-enrolment-id'
     assert str(enrolment.key) == fixed_uuid_str
 
     boto_client.return_value.get_object.assert_called_once_with(
-        Body=bytes(enrolment.json(), 'utf-8'),
         Key=f'{enrolment.enrolment_id}.json',  # NOQA
         Bucket='some-bucket'
     )
