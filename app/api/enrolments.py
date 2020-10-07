@@ -28,7 +28,7 @@ def create_enrolment(inputs: NewEnrolmentRequest):
 
 @router.get("/enrolments/{enrolment_id}")
 def get_enrolment_by_id(enrolment_id: str):  # TODO: typing, return enrolment summary
-    """ Return the current status of the given enrolment
+    """Return the current status of the given enrolment
 
 
     This relies on certain callbacks
