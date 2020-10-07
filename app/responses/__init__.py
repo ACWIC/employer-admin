@@ -6,6 +6,7 @@ from pydantic.typing import Literal
 class FailureType(str, Enum):
     RESOURCE_ERROR = 'ResourceError'
     SYSTEM_ERROR = 'SystemError'
+    VALIDATION_ERROR = 'ValidationError'
 
 
 class ResponseFailure(BaseModel):
@@ -32,6 +33,13 @@ class ResponseFailure(BaseModel):
     def build_from_system_error(cls, message=None):
         return cls(
             type=FailureType.SYSTEM_ERROR,
+            message=cls._format_message(message)
+        )
+
+    @classmethod
+    def validation_error(cls, message=None):
+        return cls(
+            type=FailureType.VALIDATION_ERROR,
             message=cls._format_message(message)
         )
 

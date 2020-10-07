@@ -1,6 +1,5 @@
 import os
 import boto3
-from datetime import datetime
 import uuid
 from typing import Any
 from app.repositories.enrolment_repo import EnrolmentRepo
@@ -27,13 +26,9 @@ class S3EnrolmentRepo(EnrolmentRepo):
         super().__init__(**kwargs)
         self.s3 = boto3.client('s3', **connection_data)
 
-    def save_enrolment(self, enrolment_id: str):
+    def save_enrolment(self, enrollment: dict):
 
-        enrl = Enrolment(
-            enrolment_id=enrolment_id,
-            key=str(uuid.uuid4()),  # random GUID
-            created=datetime.now(),  # check the clock
-        )
+        enrl = Enrolment(**enrollment)
 
         self.s3.put_object(
             Body=bytes(enrl.json(), 'utf-8'),

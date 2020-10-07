@@ -3,10 +3,13 @@ from app.repositories.enrolment_repo import EnrolmentRepo
 from app.requests.enrolment_requests import NewEnrolmentRequest
 from app.responses import ResponseFailure
 from app.responses import ResponseSuccess
+from app.utils import Random
+
+from datetime import datetime
 
 
 class CreateNewEnrolment(BaseModel):
-    enrolment_repo: EnrolmentRepo  # class attribute (singleton)
+    enrolment_repo: EnrolmentRepo
 
     class Config:
         # Pydantic will complain if something (enrolment_repo) is defined
@@ -15,11 +18,33 @@ class CreateNewEnrolment(BaseModel):
         arbitrary_types_allowed = True
 
     def execute(self, request: NewEnrolmentRequest):
+
+        internal_reference = request.internal_reference
+        if not self.is_reference_unique(internal_reference):
+            return ResponseFailure.validation_error(
+                message='field internal_reference is already used.'
+                )
+
+        params = {
+            'enrolment_id': Random.get_uuid(),
+            'shared_secret': Random.get_uuid(),
+            'internal_reference': internal_reference,
+            'created': datetime.now()
+        }
+
         try:
-            enrolment = self.enrolment_repo.save_enrolment(
-                enrolment_id=request.enrolment_id,
-            )
+            enrolment = self.enrolment_repo.save_enrolment(params)
         except Exception as e:  # noqa - TODO: handle specific failure types
             return ResponseFailure.build_from_resource_error(message=e)
 
         return ResponseSuccess(value=enrolment)
+
+    def is_reference_unique(self, internal_reference: str) -> bool:
+        """
+        Check whether given internal_reference is unique or not
+        """
+        unique = True
+
+        # TODO : check from existing enrolments
+
+        return unique
