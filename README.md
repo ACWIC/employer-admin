@@ -69,3 +69,16 @@ Tests are run with pytest, which can be executed with the shortcut make command:
 make test
 ```
 
+TODO: include pre-commit checks in make-test
+
+
+## Style guide
+We use pre-commit hooks, including black, isort, flake8.
+
+The suggested way to install these hooks it is by installing [pre-commit](https://pre-commit.com/), 
+
+then running 
+`pre-commit install`
+
+Note that on the first time you run `git commit`, it's gonna take sometime 
+to install all the hooks, but after that it will be fast.
