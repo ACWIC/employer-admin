@@ -69,6 +69,9 @@ Tests are run with pytest, which can be executed with the shortcut make command:
 make test
 ```
 
+TODO: include pre-commit checks in make-test
+
+
 ## Style guide
 We use pre-commit hooks, including black, isort, flake8.
 
