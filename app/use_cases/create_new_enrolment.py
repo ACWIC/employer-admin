@@ -22,14 +22,14 @@ class CreateNewEnrolment(BaseModel):
         internal_reference = request.internal_reference
         if not self.is_reference_unique(internal_reference):
             return ResponseFailure.validation_error(
-                message='field internal_reference is already used.'
-                )
+                message="field internal_reference is already used."
+            )
 
         params = {
-            'enrolment_id': Random.get_uuid(),
-            'shared_secret': Random.get_uuid(),
-            'internal_reference': internal_reference,
-            'created': datetime.now()
+            "enrolment_id": Random.get_uuid(),
+            "shared_secret": Random.get_uuid(),
+            "internal_reference": internal_reference,
+            "created": datetime.now(),
         }
 
         try:
