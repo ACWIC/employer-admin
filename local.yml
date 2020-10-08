@@ -15,6 +15,7 @@ services:
       - "8082:8080"
     env_file:
       - ./.envs/.local/.minio
+      - ./.envs/.local/.env
     depends_on:
       - minio
     command: /start

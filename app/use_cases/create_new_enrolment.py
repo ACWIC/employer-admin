@@ -20,9 +20,11 @@ class CreateNewEnrolment(BaseModel):
     def execute(self, request: NewEnrolmentRequest):
 
         internal_reference = request.internal_reference
-        if not self.is_reference_unique(internal_reference):
+        if not self.enrolment_repo.is_reference_unique(
+            Random.get_str_hash(internal_reference)
+        ):
             return ResponseFailure.validation_error(
-                message="field internal_reference is already used."
+                message=f"internal_reference {internal_reference} is already used."
             )
 
         params = {
@@ -38,13 +40,3 @@ class CreateNewEnrolment(BaseModel):
             return ResponseFailure.build_from_resource_error(message=e)
 
         return ResponseSuccess(value=enrolment)
-
-    def is_reference_unique(self, internal_reference: str) -> bool:
-        """
-        Check whether given internal_reference is unique or not
-        """
-        unique = True
-
-        # TODO : check from existing enrolments
-
-        return unique
