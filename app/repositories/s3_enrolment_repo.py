@@ -1,8 +1,10 @@
-import boto3
 from typing import Any, Union
+
+import boto3
+
 from app.config import Config
-from app.repositories.enrolment_repo import EnrolmentRepo
 from app.domain.entities.enrolment import Enrolment
+from app.repositories.enrolment_repo import EnrolmentRepo
 from app.utils.random import Random
 
 
