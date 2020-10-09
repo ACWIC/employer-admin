@@ -2,7 +2,7 @@ from typing import Any, Union
 
 import boto3
 
-from app.config import Config
+from app.config import settings
 from app.domain.entities.enrolment import Enrolment
 from app.repositories.enrolment_repo import EnrolmentRepo
 from app.utils.random import Random
@@ -14,9 +14,9 @@ class S3EnrolmentRepo(EnrolmentRepo):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.params = {
-            "aws_access_key_id": Config.S3_ACCESS_KEY_ID,
-            "aws_secret_access_key": Config.S3_SECRET_ACCESS_KEY,
-            "endpoint_url": Config.S3_ENDPOINT_URL,
+            "aws_access_key_id": settings.S3_ACCESS_KEY_ID,
+            "aws_secret_access_key": settings.S3_SECRET_ACCESS_KEY,
+            "endpoint_url": settings.S3_ENDPOINT_URL,
         }
         self.s3 = boto3.client("s3", **self.params)
 
@@ -28,13 +28,13 @@ class S3EnrolmentRepo(EnrolmentRepo):
         self.s3.put_object(
             Body=bytes(enrl.enrolment_id, "utf-8"),
             Key=f"employer_reference/{ref_hash}/enrolment_id.json",
-            Bucket=Config.ENROLMENT_BUCKET,
+            Bucket=settings.ENROLMENT_BUCKET,
         )
 
         self.s3.put_object(
             Body=bytes(enrl.shared_secret, "utf-8"),
             Key=f"enrolments/{enrl.enrolment_id}.json",
-            Bucket=Config.ENROLMENT_BUCKET,
+            Bucket=settings.ENROLMENT_BUCKET,
         )
 
         return enrl
@@ -51,7 +51,7 @@ class S3EnrolmentRepo(EnrolmentRepo):
         try:
             self.s3.get_object(
                 Key=f"employer_reference/{ref_hash}/enrolment_id.json",
-                Bucket=Config.ENROLMENT_BUCKET,
+                Bucket=settings.ENROLMENT_BUCKET,
             )
         except Exception:
             return True
