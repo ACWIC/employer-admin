@@ -1,6 +1,7 @@
-from app.domain.entities.enrolment import Enrolment
 from datetime import datetime
 from uuid import uuid4
+
+from app.domain.entities.enrolment import Enrolment
 
 
 def test_enrolment_init():

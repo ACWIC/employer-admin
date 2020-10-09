@@ -69,3 +69,22 @@ Tests are run with pytest, which can be executed with the shortcut make command:
 make test
 ```
 
+## Style guide
+We follow the guidelines offered by black, isort, and flake8
+
+### pre-commit
+We use pre-commit to enforce style checks before committing code in git.
+
+Please install it from [pre-commit](https://pre-commit.com/)
+then run `pre-commit install`
+
+Note that on the first time you run `git commit`, it's gonna take sometime 
+to install all the hooks, but after that it will be fast.
+
+to check your code style without having to do `git commit`, run:
+ 
+ `pre-commit run`: It will check your staged files, and print any issues
+ 
+ `pre-commit run -a`: It will check all the project files
+ 
+ 

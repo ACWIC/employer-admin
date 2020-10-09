@@ -37,9 +37,18 @@ jobs:
           wd: .
       - flake8/flake8_warnings:
           wd: .
+  pre-commit-hooks:
+    executor: python/default
+    steps:
+      - checkout
+      - run:
+          command: |
+            pip install pre-commit
+            pre-commit run -a
 
 workflows:
   main:
     jobs:
       - build-and-test
       - code-style-checks
+      - pre-commit-hooks
