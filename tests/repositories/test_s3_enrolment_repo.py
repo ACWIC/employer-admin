@@ -5,12 +5,13 @@ The are testing the encapsulation of the "impure" code
 the repos should return pure domain objects
 of the appropriate type.
 """
-from os import environ
-from uuid import UUID
 from datetime import datetime
+from os import environ
 from unittest.mock import patch
-from app.utils import Random
+from uuid import UUID
+
 from app.repositories.s3_enrolment_repo import S3EnrolmentRepo
+from app.utils import Random
 
 
 @patch("boto3.client")

@@ -1,11 +1,11 @@
+from datetime import datetime
+
 from pydantic import BaseModel
+
 from app.repositories.enrolment_repo import EnrolmentRepo
 from app.requests.enrolment_requests import NewEnrolmentRequest
-from app.responses import ResponseFailure
-from app.responses import ResponseSuccess
+from app.responses import ResponseFailure, ResponseSuccess
 from app.utils import Random
-
-from datetime import datetime
 
 
 class CreateNewEnrolment(BaseModel):

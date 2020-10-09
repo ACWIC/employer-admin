@@ -1,1 +1,1 @@
-from .random import Random # noqa
+from .random import Random  # noqa

@@ -2,13 +2,13 @@
 These tests evaluate (and document) the business logic.
 """
 from datetime import datetime
-from uuid import uuid4
 from unittest import mock
+from uuid import uuid4
+
 from app.domain.entities.enrolment import Enrolment
 from app.repositories.s3_enrolment_repo import S3EnrolmentRepo
 from app.requests.enrolment_requests import NewEnrolmentRequest
 from app.use_cases.create_new_enrolment import CreateNewEnrolment
-
 
 dummy_key = str(uuid4())
 dummy_created = datetime.now()
