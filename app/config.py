@@ -1,5 +1,6 @@
 import os
 
+
 def get_envar(k, required=True):
     val = os.environ.get(k, None)
     if not val and required:

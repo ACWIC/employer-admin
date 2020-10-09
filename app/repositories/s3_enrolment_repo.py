@@ -1,7 +1,4 @@
-import os
 import boto3
-import uuid
-import json
 from typing import Any, Union
 from app.config import Config
 from app.repositories.enrolment_repo import EnrolmentRepo
@@ -50,11 +47,11 @@ class S3EnrolmentRepo(EnrolmentRepo):
         Check whether given internal_reference is unique or not
         """
         try:
-            obj = self.s3.get_object(
+            self.s3.get_object(
                 Key=f"employer_reference/{ref_hash}/enrolment_id.json",
                 Bucket=Config.ENROLMENT_BUCKET,
             )
-        except Exception as ex:
+        except Exception:
             return True
         else:
             return False

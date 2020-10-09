@@ -5,7 +5,6 @@ from datetime import datetime
 from uuid import uuid4
 from unittest import mock
 from app.domain.entities.enrolment import Enrolment
-from app.repositories.enrolment_repo import EnrolmentRepo
 from app.repositories.s3_enrolment_repo import S3EnrolmentRepo
 from app.requests.enrolment_requests import NewEnrolmentRequest
 from app.use_cases.create_new_enrolment import CreateNewEnrolment
