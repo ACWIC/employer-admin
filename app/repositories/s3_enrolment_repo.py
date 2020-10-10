@@ -1,6 +1,8 @@
-from typing import Any, Union
-import boto3
 import json
+from typing import Any, Union
+
+import boto3
+
 from app.config import settings
 from app.domain.entities.enrolment import Enrolment
 from app.repositories.enrolment_repo import EnrolmentRepo
@@ -41,8 +43,7 @@ class S3EnrolmentRepo(EnrolmentRepo):
     def get_enrolment(self, enrolment_id: str):
 
         obj = self.s3.get_object(
-            Key=f'{enrolment_id}.json',
-            Bucket=settings.ENROLMENT_BUCKET
+            Key=f"{enrolment_id}.json", Bucket=settings.ENROLMENT_BUCKET
         )
         enrl = Enrolment(**json.loads(obj["Body"].read().decode()))
         return enrl
