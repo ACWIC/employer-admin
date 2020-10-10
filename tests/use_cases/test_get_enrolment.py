@@ -1,5 +1,3 @@
-
-
 def test_get_enrolment_by_id():
     """
     When GetEnrolmentByID is instantiated,

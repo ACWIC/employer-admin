@@ -1,7 +1,7 @@
 from pydantic import BaseModel
+
 from app.repositories.enrolment_repo import EnrolmentRepo
-from app.responses import ResponseFailure
-from app.responses import ResponseSuccess
+from app.responses import ResponseFailure, ResponseSuccess
 
 
 class GetEnrolmentByID(BaseModel):
