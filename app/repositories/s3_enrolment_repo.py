@@ -1,3 +1,4 @@
+import json
 from typing import Any, Union
 
 import boto3
@@ -32,15 +33,13 @@ class S3EnrolmentRepo(EnrolmentRepo):
         )
 
         self.s3.put_object(
-            Body=bytes(enrl.shared_secret, "utf-8"),
+            Body=bytes(enrl.json(), "utf-8"),
+            # Body=bytes(enrl.shared_secret, "utf-8"),
             Key=f"enrolments/{enrl.enrolment_id}.json",
             Bucket=settings.ENROLMENT_BUCKET,
         )
 
         return enrl
-
-    def get_enrolment(self, enrolment_id: str) -> None:
-        pass
 
     def is_reference_unique(
         self, ref_hash: str
@@ -57,3 +56,15 @@ class S3EnrolmentRepo(EnrolmentRepo):
             return True
         else:
             return False
+
+    def get_enrolment(self, enrolment_id: str):
+        print(
+            "get_enrolment() enrolment_id, BUCKET",
+            enrolment_id,
+            settings.ENROLMENT_BUCKET,
+        )
+        obj = self.s3.get_object(
+            Key=f"enrolments/{enrolment_id}.json", Bucket=settings.ENROLMENT_BUCKET
+        )
+        enrolment = Enrolment(**json.loads(obj["Body"].read().decode()))
+        return enrolment

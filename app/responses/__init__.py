@@ -4,6 +4,10 @@ from pydantic import BaseModel
 from pydantic.typing import Literal
 
 
+class SuccessType(str, Enum):
+    SUCCESS = 200
+
+
 class FailureType(str, Enum):
     RESOURCE_ERROR = "ResourceError"
     SYSTEM_ERROR = "SystemError"
