@@ -63,14 +63,10 @@ def test_get_callbacks_list(boto_client, uuid4):
     print("test_get_callbacks_list()")
     enrolment_id = "look-at-my-enrolment-id"
     fixed_uuid_str = "1dad3dd8-af28-4e61-ae23-4c93a456d10e"
-    fixed_uuid_str_ = "1dad3dd8-af28-4e61-ae23-4c93a456d10e"
     uuid4.return_value = UUID(fixed_uuid_str)
     repo = S3CallbackRepo()
     settings.ENROLMENT_BUCKET = "some-bucket"
     settings.CALLBACK_BUCKET = "some-bucket1"
-
-
-    print("botoclient", boto_client)
 
     with patch(
         "json.loads",
@@ -89,7 +85,14 @@ def test_get_callbacks_list(boto_client, uuid4):
         callbacks_list = repo.get_callbacks_list(enrolment_id=enrolment_id)
         print("test callbacks_list", callbacks_list)
 
-    assert callbacks_list == {"callbacks_list": [{'callback_id': '1c1e9bd1-82ed-42a6-a82b-11fdacecc2db', 'received':  datetime(2020, 10, 11, 16, 6, 53, 739338)}]}
+    assert callbacks_list == {
+        "callbacks_list": [
+            {
+                'callback_id': '1c1e9bd1-82ed-42a6-a82b-11fdacecc2db',
+                'received':  datetime(2020, 10, 11, 16, 6, 53, 739338)
+            }
+        ]
+    }
 
     boto_client.return_value.get_object.assert_called_once_with(
         Key=f"{enrolment_id}.json", Bucket="some-bucket1"
@@ -98,7 +101,7 @@ def test_get_callbacks_list(boto_client, uuid4):
 
 def list_objects_sample_content(Bucket, Prefix):
     return {
-        'Contents':[
+        'Contents': [
             {
                 'callback_id': '1c1e9bd1-82ed-42a6-a82b-11fdacecc2db',
                 "bucket": Bucket,
