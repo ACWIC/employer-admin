@@ -113,31 +113,29 @@ def test_get_enrolment_status(boto_client, uuid4, callback_repo_list):
     callback_received = "2020-10-07 15:37:16.727308"
     callback_received_2 = "2020-10-07 16:37:16.727308"
 
-    callback_repo_list.return_value = \
-        {'callbacks_list': [{'callback_id': callback_id,
-         'received': callback_received},
-                            {'callback_id': callback_id_2,
-                            'received': callback_received_2}]}
+    callback_repo_list.return_value = {
+        "callbacks_list": [
+            {"callback_id": callback_id, "received": callback_received},
+            {"callback_id": callback_id_2, "received": callback_received_2},
+        ]
+    }
 
     enrolment_status = repo.get_enrolment_status(
         enrolment_id="look-at-my-enrolment-id"
-        )['status']
+    )["status"]
     print("enrolment_status", enrolment_status, type(enrolment_status))
 
-    assert str(enrolment_status['most_recent_callback']) == "2020-10-07 16:37:16.727308"
-    assert str(enrolment_status['total_callbacks']) == "2"
+    assert str(enrolment_status["most_recent_callback"]) == "2020-10-07 16:37:16.727308"
+    assert str(enrolment_status["total_callbacks"]) == "2"
 
-    callback_repo_list.assert_called_once_with(
-        "look-at-my-enrolment-id"  # NOQA
-    )
+    callback_repo_list.assert_called_once_with("look-at-my-enrolment-id")  # NOQA
 
-    callback_repo_list.return_value = \
-        {'callbacks_list': []}
+    callback_repo_list.return_value = {"callbacks_list": []}
 
     enrolment_status = repo.get_enrolment_status(
         enrolment_id="look-at-my-enrolment-id"
-        )['status']
+    )["status"]
 
     print("enrolment_status", enrolment_status, type(enrolment_status))
-    assert str(enrolment_status['most_recent_callback']) == ""
-    assert str(enrolment_status['total_callbacks']) == "0"
+    assert str(enrolment_status["most_recent_callback"]) == ""
+    assert str(enrolment_status["total_callbacks"]) == "0"
