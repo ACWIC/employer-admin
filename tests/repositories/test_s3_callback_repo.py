@@ -53,9 +53,10 @@ def test_save_callback(boto_client, uuid4):
     )
 
 
+@patch("app.repositories.s3_enrolment_repo.S3EnrolmentRepo.get_enrolment")
 @patch("uuid.uuid4")
 @patch("boto3.client")
-def test_get_callbacks_list(boto_client, uuid4):
+def test_get_callbacks_list(boto_client, uuid4, repo_get_enrolment):
     """
     Ensure the S3Enrolmentrepo returns an object with OK data
     and that an appropriate boto3 put call was made.
@@ -67,6 +68,7 @@ def test_get_callbacks_list(boto_client, uuid4):
     repo = S3CallbackRepo()
     settings.ENROLMENT_BUCKET = "some-bucket"
     settings.CALLBACK_BUCKET = "some-bucket1"
+    repo_get_enrolment.return_value = True
 
     with patch(
         "json.loads",

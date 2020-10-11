@@ -9,9 +9,6 @@ from app.config import settings
 from app.domain.entities.callback import Callback
 from app.repositories.callback_repo import CallbackRepo
 
-# from app.repositories.s3_enrolment_repo import S3EnrolmentRepo
-#
-# enrolment_repo = S3EnrolmentRepo()
 
 
 class S3CallbackRepo(CallbackRepo):
@@ -53,8 +50,10 @@ class S3CallbackRepo(CallbackRepo):
             enrolment_id,
             settings.CALLBACK_BUCKET,
         )
+        from app.repositories.s3_enrolment_repo import S3EnrolmentRepo
+        enrolment_repo = S3EnrolmentRepo()
         # check if enrolment exists, it will raise error if it doesn't
-        # enrolment_repo.get_enrolment(enrolment_id)
+        enrolment_repo.get_enrolment(enrolment_id)
         # get callbacks for enrolment id
         callbacks_objects_list = self.s3.list_objects(
             Bucket=settings.CALLBACK_BUCKET, Prefix="{}/".format(enrolment_id)
