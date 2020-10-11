@@ -5,9 +5,9 @@ The are testing the encapsulation of the "impure" code
 the repos should return pure domain objects
 of the appropriate type.
 """
-from unittest.mock import patch, MagicMock
-from uuid import UUID
 from datetime import datetime
+from unittest.mock import MagicMock, patch
+from uuid import UUID
 
 from app.config import settings
 from app.repositories.s3_callback_repo import S3CallbackRepo
@@ -72,12 +72,14 @@ def test_get_callbacks_list(boto_client, uuid4):
         "json.loads",
         MagicMock(
             side_effect=[
-                {"callback_id": "1c1e9bd1-82ed-42a6-a82b-11fdacecc2db",
-                 "received": "2020-10-11T16:06:53.739338",
-                 "enrolment_id": "cdf727e1-d9be-4450-9e64-8f18916598df",
-                 "key": "04159571-6fa2-4d67-862a-ca9335372b03",
-                 "tp_sequence": 0,
-                 "payload": {}}
+                {
+                    "callback_id": "1c1e9bd1-82ed-42a6-a82b-11fdacecc2db",
+                    "received": "2020-10-11T16:06:53.739338",
+                    "enrolment_id": "cdf727e1-d9be-4450-9e64-8f18916598df",
+                    "key": "04159571-6fa2-4d67-862a-ca9335372b03",
+                    "tp_sequence": 0,
+                    "payload": {}
+                 }
             ]
         ),
     ):
@@ -88,8 +90,8 @@ def test_get_callbacks_list(boto_client, uuid4):
     assert callbacks_list == {
         "callbacks_list": [
             {
-                'callback_id': '1c1e9bd1-82ed-42a6-a82b-11fdacecc2db',
-                'received':  datetime(2020, 10, 11, 16, 6, 53, 739338)
+                "callback_id": "1c1e9bd1-82ed-42a6-a82b-11fdacecc2db",
+                "received":  datetime(2020, 10, 11, 16, 6, 53, 739338)
             }
         ]
     }
@@ -101,12 +103,12 @@ def test_get_callbacks_list(boto_client, uuid4):
 
 def list_objects_sample_content(Bucket, Prefix):
     return {
-        'Contents': [
+        "Contents": [
             {
-                'callback_id': '1c1e9bd1-82ed-42a6-a82b-11fdacecc2db',
+                "callback_id": "1c1e9bd1-82ed-42a6-a82b-11fdacecc2db",
                 "bucket": Bucket,
                 "prefix": Prefix,
-                'Key': "look-at-my-enrolment-id.json"
+                "Key": "look-at-my-enrolment-id.json"
             }
         ]
     }
