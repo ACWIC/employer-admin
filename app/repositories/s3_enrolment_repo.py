@@ -75,7 +75,7 @@ class S3EnrolmentRepo(EnrolmentRepo):
     def get_enrolment_status(self, enrolment_id: str):
         callbacks_list = callback_repo.get_callbacks_list(enrolment_id)
         total_callbacks = len(callbacks_list["callbacks_list"])
-
+        most_recent_callback = ""
         for row in callbacks_list["callbacks_list"]:
             most_recent_callback = row["received"]
 
