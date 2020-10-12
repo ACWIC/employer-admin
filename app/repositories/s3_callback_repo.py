@@ -8,6 +8,7 @@ import boto3
 from app.config import settings
 from app.domain.entities.callback import Callback
 from app.repositories.callback_repo import CallbackRepo
+from app.repositories.s3_enrolment_repo import S3EnrolmentRepo
 
 
 class S3CallbackRepo(CallbackRepo):
@@ -21,6 +22,7 @@ class S3CallbackRepo(CallbackRepo):
             "endpoint_url": settings.S3_ENDPOINT_URL,
         }
         self.s3 = boto3.client("s3", **self.params)
+        self.enrolment_repo = S3EnrolmentRepo()
 
     def save_callback(
         self, enrolment_id: str, key: str, tp_sequence: int, payload: dict
@@ -49,11 +51,8 @@ class S3CallbackRepo(CallbackRepo):
             enrolment_id,
             settings.CALLBACK_BUCKET,
         )
-        from app.repositories.s3_enrolment_repo import S3EnrolmentRepo
-
-        enrolment_repo = S3EnrolmentRepo()
         # check if enrolment exists, it will raise error if it doesn't
-        enrolment_repo.get_enrolment(enrolment_id)
+        self.enrolment_repo.get_enrolment(enrolment_id)
         # get callbacks for enrolment id
         callbacks_objects_list = self.s3.list_objects(
             Bucket=settings.CALLBACK_BUCKET, Prefix="{}/".format(enrolment_id)
@@ -72,3 +71,15 @@ class S3CallbackRepo(CallbackRepo):
             )
         # print("callbacks_list:", [callbacks_list])
         return {"callbacks_list": callbacks_list}
+
+    def get_event_details(self, enrolment_id: str, event_id: str) -> list:
+        print("getting event details for ", enrolment_id, event_id)
+
+        self.enrolment_repo.get_enrolment(enrolment_id)
+
+        # get callbacks for enrolment id
+        callbacks_objects_list = self.s3.list_objects(
+            Bucket=settings.CALLBACK_BUCKET, Prefix="{}/".format(enrolment_id)
+        )
+
+        return callbacks_objects_list
