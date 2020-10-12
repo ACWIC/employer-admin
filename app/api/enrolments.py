@@ -6,6 +6,7 @@ from app.requests.callback_requests import CallbackRequest
 from app.requests.enrolment_requests import NewEnrolmentRequest
 from app.use_cases.create_new_callback import CreateNewCallback
 from app.use_cases.create_new_enrolment import CreateNewEnrolment
+from app.use_cases.event import EventDetails
 from app.use_cases.get_callbacks_list import GetCallbacksList
 from app.use_cases.get_enrolment import GetEnrolmentByID
 from app.use_cases.get_enrolment_status import GetEnrolmentStatus
@@ -63,7 +64,9 @@ def get_enrolment_status(enrolment_id: str):  # TODO: typing, return enrolment s
       that relate to state changes.
     * use these message-types to calculate the current state
     """
-    use_case = GetEnrolmentStatus(enrolment_repo=enrolment_repo)
+    use_case = GetEnrolmentStatus(
+        enrolment_repo=enrolment_repo, callback_repo=callback_repo
+    )
     response = use_case.execute(enrolment_id)
     return response
 
@@ -83,6 +86,16 @@ def get_callbacks_list_for_enrolment(
     use_case = GetCallbacksList(callback_repo=callback_repo)
     callbacks_list = use_case.execute(enrolment_id)
     return callbacks_list
+
+
+@router.get("/enrolments/{enrolment_id}/journal/{event_id}")
+def get_event_details_for_enrolment(enrolment_id: str, event_id):
+    """
+    Returns event details for an event of an enrolment
+    """
+    use_case = EventDetails(enrolment_repo=enrolment_repo, callback_repo=callback_repo)
+    event = use_case.execute(enrolment_id, event_id)
+    return event
 
 
 @router.post("/callbacks")
