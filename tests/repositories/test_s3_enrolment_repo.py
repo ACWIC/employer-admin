@@ -139,3 +139,9 @@ def test_get_enrolment_status(boto_client, uuid4, callback_repo_list):
     print("enrolment_status", enrolment_status, type(enrolment_status))
     assert str(enrolment_status["most_recent_callback"]) == ""
     assert str(enrolment_status["total_callbacks"]) == "0"
+
+
+def test_is_reference_unique():
+    repo = S3EnrolmentRepo()
+    r = repo.is_reference_unique("test-hash")
+    assert r is True

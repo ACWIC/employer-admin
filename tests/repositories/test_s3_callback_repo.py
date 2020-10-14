@@ -103,6 +103,31 @@ def test_get_callbacks_list(boto_client, uuid4, repo_get_enrolment):
     )
 
 
+@patch("app.repositories.s3_enrolment_repo.S3EnrolmentRepo.get_enrolment")
+@patch("uuid.uuid4")
+@patch("boto3.client")
+def test_get_event_details(boto_client, uuid4, repo_get_enrolment):
+    boto_client.return_value.list_objects = list_objects_sample_content
+    enrolment_id = "look-at-my-enrolment-id"
+    repo = S3CallbackRepo()
+    callback = {
+        "callback_id": "1c1e9bd1-82ed-42a6-a82b-11fdacecc2db",
+        "received": "2020-10-11T16:06:53.739338",
+        "enrolment_id": "cdf727e1-d9be-4450-9e64-8f18916598df",
+        "key": "04159571-6fa2-4d67-862a-ca9335372b03",
+        "tp_sequence": 0,
+        "payload": {},
+    }
+    with patch(
+        "json.loads",
+        MagicMock(side_effect=[callback]),
+    ):
+
+        event = repo.get_event_details(enrolment_id, callback["callback_id"])
+        assert event.enrolment_id == enrolment_id
+        assert event.event_id == callback["callback_id"]
+
+
 def list_objects_sample_content(Bucket, Prefix):
     return {
         "Contents": [
