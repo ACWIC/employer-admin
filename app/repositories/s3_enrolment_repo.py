@@ -63,11 +63,15 @@ class S3EnrolmentRepo(EnrolmentRepo):
             enrolment_id,
             settings.ENROLMENT_BUCKET,
         )
-        obj = self.s3.get_object(
-            Key=f"enrolments/{enrolment_id}.json", Bucket=settings.ENROLMENT_BUCKET
-        )
-        enrolment = Enrolment(**json.loads(obj["Body"].read().decode()))
-        return enrolment
+        try:
+            obj = self.s3.get_object(
+                Key=f"enrolments/{enrolment_id}.json", Bucket=settings.ENROLMENT_BUCKET
+            )
+            enrolment = Enrolment(**json.loads(obj["Body"].read().decode()))
+            return enrolment
+
+        except Exception:
+            raise Exception("No such enrolment")
 
     def get_enrolment_status(self, enrolment_id: str, callbacks_list: list):
         total_callbacks = len(callbacks_list["callbacks_list"])

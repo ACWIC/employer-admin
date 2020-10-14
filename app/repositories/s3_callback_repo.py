@@ -7,8 +7,11 @@ import boto3
 
 from app.config import settings
 from app.domain.entities.callback import Callback
+from app.domain.entities.event import EventDetail
 from app.repositories.callback_repo import CallbackRepo
 from app.repositories.s3_enrolment_repo import S3EnrolmentRepo
+
+enrolment_repo = S3EnrolmentRepo()
 
 
 class S3CallbackRepo(CallbackRepo):
@@ -22,7 +25,6 @@ class S3CallbackRepo(CallbackRepo):
             "endpoint_url": settings.S3_ENDPOINT_URL,
         }
         self.s3 = boto3.client("s3", **self.params)
-        self.enrolment_repo = S3EnrolmentRepo()
 
     def save_callback(
         self, enrolment_id: str, key: str, tp_sequence: int, payload: dict
@@ -52,7 +54,7 @@ class S3CallbackRepo(CallbackRepo):
             settings.CALLBACK_BUCKET,
         )
         # check if enrolment exists, it will raise error if it doesn't
-        self.enrolment_repo.get_enrolment(enrolment_id)
+        enrolment_repo.get_enrolment(enrolment_id)
         # get callbacks for enrolment id
         callbacks_objects_list = self.s3.list_objects(
             Bucket=settings.CALLBACK_BUCKET, Prefix="{}/".format(enrolment_id)
@@ -72,14 +74,32 @@ class S3CallbackRepo(CallbackRepo):
         # print("callbacks_list:", [callbacks_list])
         return {"callbacks_list": callbacks_list}
 
-    def get_event_details(self, enrolment_id: str, event_id: str) -> list:
+    def get_event_details(self, enrolment_id: str, event_id: str) -> dict:
         print("getting event details for ", enrolment_id, event_id)
+        event = {}
 
-        self.enrolment_repo.get_enrolment(enrolment_id)
+        try:
+            cb_objects = self.s3.list_objects(
+                Bucket=settings.CALLBACK_BUCKET, Prefix="{}/".format(enrolment_id)
+            )
+        except Exception:
+            raise Exception("no such enrolment")
 
-        # get callbacks for enrolment id
-        callbacks_objects_list = self.s3.list_objects(
-            Bucket=settings.CALLBACK_BUCKET, Prefix="{}/".format(enrolment_id)
+        for cb_obj in cb_objects.get("Contents", []):
+            obj = self.s3.get_object(Key=cb_obj["Key"], Bucket=settings.CALLBACK_BUCKET)
+            callback = Callback(**json.loads(obj["Body"].read().decode()))
+            if callback.callback_id == event_id:
+                event = callback
+
+        if not event:
+            raise Exception("event not found")
+
+        event_detail = EventDetail(
+            event_id=event.callback_id,
+            enrolment_id=enrolment_id,
+            received=event.received,
+            key=event.key,
+            tp_sequence=event.tp_sequence,
+            payload=event.payload,
         )
-
-        return callbacks_objects_list
+        return event_detail

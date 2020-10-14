@@ -1,7 +1,7 @@
 import abc
 
 from app.domain.entities.callback import Callback
-from app.domain.entities.event import Event
+from app.domain.entities.event import EventDetail
 
 
 class CallbackRepo(abc.ABC):
@@ -16,5 +16,5 @@ class CallbackRepo(abc.ABC):
         pass
 
     @abc.abstractmethod
-    def get_event_details(self, enrolment_id: str, event_id: str) -> Event:
+    def get_event_details(self, enrolment_id: str, event_id: str) -> EventDetail:
         pass
