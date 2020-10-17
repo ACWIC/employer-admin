@@ -129,6 +129,9 @@ dmypy.json
 *~
 \#*\#
 
+# MAC OSX
+.DS_store
+
 # Pyre type checker
 .pyre/
 
