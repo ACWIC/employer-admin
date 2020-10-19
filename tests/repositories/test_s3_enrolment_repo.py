@@ -5,9 +5,12 @@ The are testing the encapsulation of the "impure" code
 the repos should return pure domain objects
 of the appropriate type.
 """
+import json
 from datetime import datetime
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, Mock, patch
 from uuid import UUID
+
+import boto3
 
 from app.config import settings
 from app.repositories.s3_enrolment_repo import S3EnrolmentRepo
@@ -55,6 +58,45 @@ def test_save_enrolment(boto_client, uuid4):
         Bucket="some-bucket",
     )
     assert boto_client.return_value.put_object.call_count == 3
+
+
+def test_post_enrolment():
+    """
+    Ensure enrolments are updated
+    """
+    repo = S3EnrolmentRepo()
+    settings.ENROLMENT_BUCKET = "some-bucket"
+    enrolment_id = Random.get_uuid()
+    initial_enrolment_data = {
+        "enrolment_id": enrolment_id,
+        "shared_secret": Random.get_uuid(),
+        "internal_reference": Random.get_uuid(),
+        "created": str(datetime.now()),
+    }
+    bucket_response = Mock()
+    bucket_response.read.return_value = json.dumps(initial_enrolment_data).encode(
+        "utf-8"
+    )
+
+    repo.s3 = Mock(spec=boto3.client)
+    repo.s3.get_object = Mock()
+    repo.s3.get_object.return_value = {"Body": bucket_response}
+    repo.s3.put_object = Mock()
+
+    post_data = {
+        "enrolment_id": enrolment_id,
+        "course_id": "1",
+        "employee_id": "1",
+        "employee_contact": "ghorahi-dang",
+        "agree_pay_fee": True,
+        "employee_info_share": False,
+        "employer_endpoint": "",
+        "sender_sequence": "1",
+    }
+    enrolment = repo.post_enrolment(post_data)
+    assert enrolment["enrolment_id"] == enrolment_id
+    assert enrolment["shared_secret"] == initial_enrolment_data["shared_secret"]
+    assert enrolment["course_id"] == post_data["course_id"]
 
 
 @patch("uuid.uuid4")

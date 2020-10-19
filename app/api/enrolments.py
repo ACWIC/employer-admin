@@ -3,9 +3,10 @@ from fastapi import APIRouter, HTTPException
 from app.repositories.s3_callback_repo import S3CallbackRepo
 from app.repositories.s3_enrolment_repo import S3EnrolmentRepo
 from app.requests.callback_requests import CallbackRequest
-from app.requests.enrolment_requests import NewEnrolmentRequest
+from app.requests.enrolment_requests import NewEnrolmentRequest, PostEnrolmentRequest
 from app.use_cases.create_new_callback import CreateNewCallback
 from app.use_cases.create_new_enrolment import CreateNewEnrolment
+from app.use_cases.enrolment import PostEnrolment
 from app.use_cases.event import EventDetails
 from app.use_cases.get_callbacks_list import GetCallbacksList
 from app.use_cases.get_enrolment import GetEnrolmentByID
@@ -30,6 +31,17 @@ def create_enrolment(inputs: NewEnrolmentRequest):
     """
     use_case = CreateNewEnrolment(enrolment_repo=enrolment_repo)
     response = use_case.execute(inputs)
+    return response
+
+
+@router.post("/post-enrolments")
+def add_post_enrolment(payload: PostEnrolmentRequest):
+    """
+    After enrolments are created, this endpoint will be used
+    to add more payload
+    """
+    use_case = PostEnrolment(enrolment_repo=enrolment_repo)
+    response = use_case.execute(payload)
     return response
 
 
