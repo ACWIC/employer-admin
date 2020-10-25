@@ -14,3 +14,6 @@ class PostEnrolmentRequest(ValidRequest):
     employee_info_share: bool
     employer_endpoint: str
     sender_sequence: str
+
+    def to_dict(self):
+        return vars(self)

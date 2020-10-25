@@ -5,7 +5,7 @@ from app.repositories.enrolment_repo import EnrolmentRepo
 from app.responses import ResponseFailure, ResponseSuccess, SuccessType
 
 
-class GetEnrolmentStatus(BaseModel):
+class GetEnrolmentByID(BaseModel):
     enrolment_repo: EnrolmentRepo
 
     class Config:
@@ -22,12 +22,12 @@ class GetEnrolmentStatus(BaseModel):
                     + enrolment_id
                     + " is not valid."
                 )
-            enrolment_status = self.enrolment_repo.get_enrolment_status(
-                enrolment_id=enrolment_id,
+            enrolment = self.enrolment_repo.get_enrolment_request(
+                enrolment_id=enrolment_id
             )
             code = SuccessType.SUCCESS
-            message = "SUCCESS:  Enrolment status has been fetched."
+            message = "SUCCESS: Enrolment request has been fetched."
         except Exception as e:
             return ResponseFailure.build_from_resource_error(message=e)
 
-        return ResponseSuccess(value=enrolment_status, message=message, type=code)
+        return ResponseSuccess(value=enrolment, message=message, type=code)

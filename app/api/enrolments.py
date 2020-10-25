@@ -1,23 +1,19 @@
 from fastapi import APIRouter, HTTPException
 
-from app.repositories.s3_callback_repo import S3CallbackRepo
 from app.repositories.s3_enrolment_repo import S3EnrolmentRepo
-from app.requests.callback_requests import CallbackRequest
 from app.requests.enrolment_requests import NewEnrolmentRequest, PostEnrolmentRequest
-from app.use_cases.create_new_callback import CreateNewCallback
-from app.use_cases.create_new_enrolment import CreateNewEnrolment
-from app.use_cases.enrolment import PostEnrolment
-from app.use_cases.event import EventDetails
+from app.use_cases.create_enrolment import CreateNewEnrolment
+from app.use_cases.get_callback import GetCallback
 from app.use_cases.get_callbacks_list import GetCallbacksList
-from app.use_cases.get_enrolment import GetEnrolmentByID
+from app.use_cases.get_enrolment_request import GetEnrolmentByID
 from app.use_cases.get_enrolment_status import GetEnrolmentStatus
+from app.use_cases.post_enrolment import PostEnrolment
 
 router = APIRouter()
 enrolment_repo = S3EnrolmentRepo()
-callback_repo = S3CallbackRepo()
 
 
-@router.post("/enrolments")
+@router.post("/create_enrolment")
 def create_enrolment(inputs: NewEnrolmentRequest):
     """
     The Employer pre-registers a new Enrolment so callbacks can be received
@@ -31,10 +27,12 @@ def create_enrolment(inputs: NewEnrolmentRequest):
     """
     use_case = CreateNewEnrolment(enrolment_repo=enrolment_repo)
     response = use_case.execute(inputs)
+    if bool(response) is False:  # If request failed
+        raise HTTPException(status_code=response.type.value, detail=response.message)
     return response
 
 
-@router.post("/post-enrolments")
+@router.post("/post_enrolment")
 def add_post_enrolment(payload: PostEnrolmentRequest):
     """
     After enrolments are created, this endpoint will be used
@@ -42,81 +40,61 @@ def add_post_enrolment(payload: PostEnrolmentRequest):
     """
     use_case = PostEnrolment(enrolment_repo=enrolment_repo)
     response = use_case.execute(payload)
+    if bool(response) is False:  # If request failed
+        raise HTTPException(status_code=response.type.value, detail=response.message)
     return response
 
 
-@router.get("/enrolments/{enrolment_id}")
-def get_enrolment_by_id(enrolment_id: str):  # TODO: typing, return enrolment summary
-    """Return the current status of the given enrolment
-
-
-    This relies on certain callbacks
-    with payloads that describe state-changes in the enrolment.
-
-    TODO:
-    * negotiate a state-chart and set of message-types
-      that relate to state changes.
-    * use these message-types to calculate the current state
+@router.get("/get_enrolment/{enrolment_id}")
+def get_enrolment(enrolment_id: str):
+    """
+    Return contents of enrolment
     """
     use_case = GetEnrolmentByID(enrolment_repo=enrolment_repo)
     response = use_case.execute(enrolment_id)
+    if bool(response) is False:  # If request failed
+        raise HTTPException(status_code=response.type.value, detail=response.message)
     return response
 
 
-@router.get("/enrolments/{enrolment_id}/status")
-def get_enrolment_status(enrolment_id: str):  # TODO: typing, return enrolment summary
+@router.get("/get_enrolment_status/{enrolment_id}")
+def get_enrolment_status(enrolment_id: str):
     """Return the current status of the given enrolment
-
-
     This relies on certain callbacks
     with payloads that describe state-changes in the enrolment.
 
-    TODO:
     * negotiate a state-chart and set of message-types
       that relate to state changes.
     * use these message-types to calculate the current state
     """
-    use_case = GetEnrolmentStatus(
-        enrolment_repo=enrolment_repo, callback_repo=callback_repo
-    )
+    use_case = GetEnrolmentStatus(enrolment_repo=enrolment_repo)
     response = use_case.execute(enrolment_id)
+    if bool(response) is False:  # If request failed
+        raise HTTPException(status_code=response.type.value, detail=response.message)
     return response
 
 
-@router.get("/enrolments/{enrolment_id}/journal")
+@router.get("/get_enrolment_journal/{enrolment_id}")
 def get_callbacks_list_for_enrolment(
     enrolment_id: str,
-):  # TODO: typing, return enrolment summary
-    """Return the current status of the given enrolment
-    This relies on certain callbacks
-    with payloads that describe state-changes in the enrolment.
-    TODO:
-    * negotiate a state-chart and set of message-types
-      that relate to state changes.
-    * use these message-types to calculate the current state
+):
     """
-    use_case = GetCallbacksList(callback_repo=callback_repo)
-    callbacks_list = use_case.execute(enrolment_id)
-    return callbacks_list
-
-
-@router.get("/enrolments/{enrolment_id}/journal/{event_id}")
-def get_event_details_for_enrolment(enrolment_id: str, event_id):
+    Return the callbacks list
     """
-    Returns event details for an event of an enrolment
-    """
-    use_case = EventDetails(enrolment_repo=enrolment_repo, callback_repo=callback_repo)
-    event = use_case.execute(enrolment_id, event_id)
-    return event
-
-
-@router.post("/callbacks")
-def create_callback(inputs: CallbackRequest):
-
-    use_case = CreateNewCallback(
-        callback_repo=callback_repo, enrolment_repo=enrolment_repo
-    )
-    response = use_case.execute(inputs)
+    use_case = GetCallbacksList(enrolment_repo=enrolment_repo)
+    response = use_case.execute(enrolment_id)
     if bool(response) is False:  # If request failed
-        raise HTTPException(status_code=response.type, detail=response.message)
+        raise HTTPException(status_code=response.type.value, detail=response.message)
+    return response
+
+
+@router.get("/enrolments/{enrolment_id}/journal/{callback_id}")
+def get_callback_for_enrolment(enrolment_id: str, callback_id):
+    """
+    Returns callback details for an callback of an enrolment
+    """
+    use_case = GetCallback(enrolment_repo=enrolment_repo)
+    response = use_case.execute(enrolment_id, callback_id)
+    if bool(response) is False:  # If request failed
+        raise HTTPException(status_code=response.type.value, detail=response.message)
     return response

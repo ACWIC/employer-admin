@@ -1,11 +1,10 @@
-from app.domain.entities.enrolment import Enrolment
+from app.requests.enrolment_requests import PostEnrolmentRequest
 from tests.test_data.data_provider import DataProvider
 
 
-def test_enrolment_init():
-    enrolment = Enrolment(
+def test_post_enrolment_reques():
+    enrolment = PostEnrolmentRequest(
         enrolment_id=DataProvider().enrolment_id,
-        shared_secret=DataProvider().shared_secret,
         course_id=DataProvider().course_id,
         employee_id=DataProvider().employee_id,
         employee_contact="abc",
@@ -16,7 +15,6 @@ def test_enrolment_init():
     )
 
     assert enrolment.enrolment_id == DataProvider().enrolment_id
-    assert enrolment.shared_secret == DataProvider().shared_secret
     assert enrolment.course_id == DataProvider().course_id
     assert enrolment.employee_id == DataProvider().employee_id
     assert enrolment.employee_contact == "abc"
