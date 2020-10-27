@@ -1,6 +1,6 @@
-codecov:
-  comment:
-    require_changes: false
+comment:
+  require_changes: true
+coverage:
   status:
     project:
       default:
