@@ -76,5 +76,7 @@ workflows:
               only: main
       - deploy-to-prod:
           filters:
+            branches:
+              ignore: /.*/
             tags:
-              only: /v.*-stable/
+              only: /^v.*-stable/
