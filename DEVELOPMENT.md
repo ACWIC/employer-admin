@@ -18,6 +18,13 @@ or failing tests.
 
 ## Tests
 
+before anything, make sure to create a `.env` file in
+the project root directory with the following contents:
+```
+CALLBACK_BUCKET=put-callbacks-here
+ENROLMENT_BUCKET=put-enrolments-here
+```
+
 Tests are run with pytest, which can be executed with the shortcut make command:
 ```
 make test
@@ -30,9 +37,9 @@ TODO: include pre-commit checks in make-test
 
 We use pre-commit hooks, including black, isort, flake8.
 
-The suggested way to install these hooks it is by installing [pre-commit](https://pre-commit.com/), 
+The suggested way to install these hooks it is by installing [pre-commit](https://pre-commit.com/),
 
-then running 
+then running
 `pre-commit install`
 
 Note that on the first time you run `git commit`,
