@@ -1,19 +1,31 @@
 from pydantic import BaseModel
 
-from app.repositories.callback_repo import CallbackRepo
-from app.responses import ResponseFailure, ResponseSuccess
+from app.config import settings
+from app.repositories.enrolment_repo import EnrolmentRepo
+from app.responses import ResponseFailure, ResponseSuccess, SuccessType
 
 
 class GetCallbacksList(BaseModel):
-    callback_repo: CallbackRepo
+    enrolment_repo: EnrolmentRepo
 
     class Config:
         arbitrary_types_allowed = True
 
     def execute(self, enrolment_id: str):
         try:
-            enrolment = self.callback_repo.get_callbacks_list(enrolment_id=enrolment_id)
-        except Exception as e:  # noqa - TODO: handle specific failure types
+            # check if enrolment exists or not
+            if not self.enrolment_repo.enrolment_exists(
+                enrolment_id, bucket=settings.ENROLMENT_BUCKET
+            ):
+                return ResponseFailure.build_from_validation_error(
+                    message="enrolment_id " + enrolment_id + " is not valid."
+                )
+            enrolment = self.enrolment_repo.get_callbacks_list(
+                enrolment_id=enrolment_id
+            )
+            code = SuccessType.SUCCESS
+            message = "Callbacks list has been fetched"
+        except Exception as e:
             return ResponseFailure.build_from_resource_error(message=e)
 
-        return ResponseSuccess(value=enrolment)
+        return ResponseSuccess(value=enrolment, message=message, type=code)

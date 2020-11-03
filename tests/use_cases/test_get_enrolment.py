@@ -1,29 +1,43 @@
-from datetime import datetime
-from unittest.mock import patch
+from unittest import mock
 
-from app.domain.entities.enrolment import Enrolment
 from app.repositories.s3_enrolment_repo import S3EnrolmentRepo
+from app.responses import FailureType, SuccessType
 from app.use_cases.get_enrolment import GetEnrolmentByID
+from tests.test_data.data_provider import DataProvider
 
 
-@patch("app.repositories.s3_enrolment_repo.S3EnrolmentRepo.get_enrolment")
-def test_get_enrolment_by_id(get_enrolment):
-    """
-    When GetEnrolmentByID is instantiated,
-    the resulting object should have correct attribute values.
-    """
-    print("test_get_enrolment_by_id()")
-    enrolment_repo = S3EnrolmentRepo()
-    use_case = GetEnrolmentByID(enrolment_repo=enrolment_repo)
-    assert use_case.enrolment_repo == enrolment_repo
+def test_get_enrolment_success():
+    repo = mock.Mock(spec=S3EnrolmentRepo)
+    enrolment_id = DataProvider().enrolment_id
+    repo.enrolment_exists.return_value = True
+    repo.get_enrolment.return_value = DataProvider().sample_enrolment
 
-    get_enrolment.return_value = Enrolment(
-        enrolment_id="1",
-        created=datetime.now(),
-        shared_secret="2323",
-        internal_reference="wf2323",
-    )
-    response = use_case.execute("1")
-    assert response.type == "Success"
-    assert response.value["enrolment_id"] == "1"
-    print("tested")
+    use_case = GetEnrolmentByID(enrolment_repo=repo)
+    response = use_case.execute(enrolment_id)
+
+    assert response.type == SuccessType.SUCCESS
+
+
+def test_get_enrolment_not_exists():
+    repo = mock.Mock(spec=S3EnrolmentRepo)
+    enrolment_id = DataProvider().enrolment_id
+    repo.enrolment_exists.return_value = False
+    repo.get_enrolment.return_value = DataProvider().sample_enrolment
+
+    use_case = GetEnrolmentByID(enrolment_repo=repo)
+    response = use_case.execute(enrolment_id)
+
+    assert response.type == FailureType.VALIDATION_ERROR
+
+
+def test_get_enrolment_failure():
+    repo = mock.Mock(spec=S3EnrolmentRepo)
+    enrolment_id = DataProvider().enrolment_id
+    repo.enrolment_exists.return_value = True
+
+    repo.get_enrolment.side_effect = Exception()
+
+    use_case = GetEnrolmentByID(enrolment_repo=repo)
+    response = use_case.execute(enrolment_id)
+
+    assert response.type == FailureType.RESOURCE_ERROR
