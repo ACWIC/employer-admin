@@ -6,11 +6,3 @@ ACWIC employer-admin API service
    :caption: Contents:
 
    overview
-
-
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
