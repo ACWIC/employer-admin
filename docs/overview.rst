@@ -14,8 +14,9 @@ https://github.com/ACWIC/employer-admin
 
 This particular component is designed to work
 as part of a suite of microservices.
-Reference implementations of all necessary components
-are provided at the ACWIC GitHub site.
+See https://acwic-employer-coordinator.readthedocs.io
+for a demonstration of how these services can be run together
+
 The suite of microservices aims to
 enable Aged Care Providers and Training Providers
 to integrate their systems
