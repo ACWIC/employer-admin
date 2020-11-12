@@ -1,0 +1,16 @@
+sphinx
+sphinx-autobuild
+wheel
+watchdog
+flake8
+Sphinx
+sphinxcontrib-plantuml
+pyenchant
+sphinxcontrib-spelling 
+
+# so we can import fastAPI code and autodoc it
+# may need to add other packages here if the build breaks 
+fastapi
+pydantic
+boto3
+boto3-stubs[essential]
