@@ -6,10 +6,15 @@ orbs:
   codecov: codecov/codecov@1.0.2
   flake8: arrai/flake8@6.0.0
   aws-cli: circleci/aws-cli@1.3.0
+  slack: circleci/slack@4.0.2
 
 jobs:
   build-and-test:
     executor: python/default
+    environment:
+      CALLBACK_BUCKET: put-callbacks-here
+      ENROLMENT_BUCKET: put-enrolments-here
+
     steps:
       - checkout
       - python/install-packages:
@@ -47,22 +52,52 @@ jobs:
             pip install pre-commit
             pre-commit run -a
 
-  deploy:
+  deploy-to-dev:
     executor: aws-cli/default
     steps:
       - checkout
       - aws-cli/setup
       - run:
-          command: make deploy_lambda
+          command: make deploy_lambda STAGE=dev
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
+      - slack/notify:
+          event: pass
+          template: success_tagged_deploy_1
+
+  deploy-to-prod:
+    executor: aws-cli/default
+    steps:
+      - checkout
+      - aws-cli/setup
+      - run:
+          command: make deploy_lambda STAGE=prod
+      - slack/notify:
+          event: fail
+          template: basic_fail_1
+      - slack/notify:
+          event: pass
+          template: success_tagged_deploy_1
 workflows:
   main:
     jobs:
       - build-and-test
       - code-style-checks
       - pre-commit-hooks
-      - deploy:
+      - deploy-to-dev:
           requires:
             - build-and-test
           filters:
             branches:
               only: main
+          context:
+            - slack-secrets
+      - deploy-to-prod:
+          filters:
+            branches:
+              ignore: /.*/
+            tags:
+              only: /^v.*-stable/
+          context:
+            - slack-secrets

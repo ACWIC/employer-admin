@@ -10,11 +10,6 @@ ENV PYTHONBUFFERED 1
 COPY ./requirements /requirements
 RUN pip install -r /requirements/uvicorn.txt
 
-# Copy scripts
-COPY ./compose/local/uvicorn/start /start
-RUN sed -i 's/\r//' /start
-RUN chmod +x /start
-
 WORKDIR /app
 
-# ENTRYPOINT ["/entrypoint"]
+CMD uvicorn app.main:app --host 0.0.0.0 --port 8080

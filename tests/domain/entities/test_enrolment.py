@@ -1,25 +1,30 @@
-from datetime import datetime
-from uuid import uuid4
-
-from app.domain.entities.enrolment import Enrolment
+from app.domain.entities.enrolment import Enrolment, NewEnrolment, NewEnrolmentSecret
+from tests.test_data.data_provider import DataProvider
 
 
 def test_enrolment_init():
-    """
-    Ensure the enrollment data matches constructor values
-    and the status is appropriately set.
-    """
-    # dummy values
-    e = str(uuid4())
-    k = str(uuid4())
-    ir = str(uuid4())
-    c = datetime.now()
-
     enrolment = Enrolment(
-        enrolment_id=e, internal_reference=ir, shared_secret=k, created=c
+        enrolment_id=DataProvider().enrolment_id,
+        shared_secret=DataProvider().shared_secret,
+        internal_reference=DataProvider().internal_reference,
+        created=DataProvider().created,
     )
 
-    assert enrolment.enrolment_id == e
-    assert enrolment.internal_reference == ir
-    assert enrolment.shared_secret == k
-    assert enrolment.created == c
+    assert enrolment.enrolment_id == DataProvider().enrolment_id
+    assert enrolment.shared_secret == DataProvider().shared_secret
+    assert enrolment.internal_reference == DataProvider().internal_reference
+    assert enrolment.created == DataProvider().created
+
+
+def test_new_enrolment_init():
+    enrolment = NewEnrolment(enrolment_id=DataProvider().enrolment_id)
+
+    assert enrolment.enrolment_id == DataProvider().enrolment_id
+
+
+def test_new_enrolment_secret_init():
+    enrolment = NewEnrolmentSecret(
+        shared_secret=DataProvider().shared_secret,
+    )
+
+    assert enrolment.shared_secret == DataProvider().shared_secret
