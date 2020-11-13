@@ -16,7 +16,9 @@ def test_create_enrolment_success_created(use_case):
     code = SuccessType.CREATED
     message = "The enrolment has been created."
     use_case().execute.return_value = ResponseSuccess(
-        value=test_data.sample_enrolment, type=code, message=message,
+        value=test_data.sample_enrolment,
+        type=code,
+        message=message,
     )
 
     data = test_data.sample_enrolment_request
@@ -34,7 +36,8 @@ def test_create_enrolment_success_created(use_case):
 def test_create_enrolment_success(use_case):
     message = "The callback has been fetched from the server."
     use_case().execute.return_value = ResponseSuccess(
-        value=test_data.sample_enrolment, message=message,
+        value=test_data.sample_enrolment,
+        message=message,
     )
 
     data = test_data.sample_enrolment_request
@@ -67,7 +70,9 @@ def test_get_enrolment_by_id_success_created(use_case):
     code = SuccessType.CREATED
     message = "The enrolment has been created."
     use_case().execute.return_value = ResponseSuccess(
-        value=test_data.sample_enrolment, type=code, message=message,
+        value=test_data.sample_enrolment,
+        type=code,
+        message=message,
     )
 
     data = test_data.enrolment_id
@@ -85,7 +90,8 @@ def test_get_enrolment_by_id_success_created(use_case):
 def test_get_enrolment_by_id_success(use_case):
     message = "The callback has been fetched from the server."
     use_case().execute.return_value = ResponseSuccess(
-        value=test_data.sample_enrolment, message=message,
+        value=test_data.sample_enrolment,
+        message=message,
     )
 
     data = test_data.enrolment_id
@@ -117,7 +123,9 @@ def test_get_enrolment_status_success_created(use_case):
     code = SuccessType.CREATED
     message = "The enrolment has been created."
     use_case().execute.return_value = ResponseSuccess(
-        value=test_data.sample_enrolment, type=code, message=message,
+        value=test_data.sample_enrolment,
+        type=code,
+        message=message,
     )
 
     data = test_data.enrolment_id
@@ -135,7 +143,8 @@ def test_get_enrolment_status_success_created(use_case):
 def test_get_enrolment_status_success(use_case):
     message = "The callback has been fetched from the server."
     use_case().execute.return_value = ResponseSuccess(
-        value=test_data.sample_enrolment, message=message,
+        value=test_data.sample_enrolment,
+        message=message,
     )
 
     data = test_data.enrolment_id
@@ -167,7 +176,9 @@ def test_get_callbacks_list_for_enrolment_success_created(use_case):
     code = SuccessType.CREATED
     message = "The enrolment has been created."
     use_case().execute.return_value = ResponseSuccess(
-        value=test_data.callbacks_list1, type=code, message=message,
+        value=test_data.callbacks_list1,
+        type=code,
+        message=message,
     )
 
     data = test_data.enrolment_id
@@ -184,7 +195,8 @@ def test_get_callbacks_list_for_enrolment_success_created(use_case):
 def test_get_callbacks_list_for_enrolment_success(use_case):
     message = "The callback has been fetched from the server."
     use_case().execute.return_value = ResponseSuccess(
-        value=test_data.callbacks_list1, message=message,
+        value=test_data.callbacks_list1,
+        message=message,
     )
 
     data = test_data.enrolment_id
@@ -214,7 +226,8 @@ def test_get_callbacks_list_for_enrolment_failure(use_case):
 def test_get_callback_for_enrolment_success(use_case):
     message = "The callback has been fetched from the server."
     use_case().execute.return_value = ResponseSuccess(
-        value=test_data.callbacks_list1, message=message,
+        value=test_data.callbacks_list1,
+        message=message,
     )
 
     response = client.get(
