@@ -16,8 +16,9 @@ who need to operate or interface this software.
 
 It is an open-source reference implementation
 provided by the
+
 `Aged Care Workforce Industry Council`_
-(ACWIC) and published at
+(ACWIC) and published at the
 `GitHub ACWIC Site`_.
 This particular component is designed to work
 as part of a suite of microservices.
