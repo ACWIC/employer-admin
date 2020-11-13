@@ -2,7 +2,7 @@ ACWIC employer-admin API service
 ================================
 
 .. _Aged Care Workforce Industry Council: https://acwic.com.au
-.. _GitHub ACWIC Site: https://github.com/ACWIC/employer-admin
+.. _GitHub: https://github.com/ACWIC/employer-admin
 .. _how to run the services together: https://acwic-employer-coordinator.readthedocs.io
 
 This is a software component (microservice)
@@ -17,8 +17,7 @@ who need to operate or interface this software.
 It is an open-source reference implementation
 provided by the
 `Aged Care Workforce Industry Council`_
-(ACWIC) and published at
-`GitHub ACWIC Site`_.
+(ACWIC) and published at `GitHub`_.
 This particular component is designed to work
 as part of a suite of microservices.
 There is documentation about
