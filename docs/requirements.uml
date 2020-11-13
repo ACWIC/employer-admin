@@ -1,0 +1,47 @@
+@startuml
+
+   package "Employer\nIntegration Microservices" {
+       database "Callbacks" as cbq
+       component "Callback\nService" as cbh #grey
+       cbh -down-> cbq #grey
+       component "Admin\nService" as emp_admin
+       emp_admin -up-> cbq
+       database "Enrolments" as config
+       cbh -down-> config #grey
+       emp_admin -up-> config
+   }
+
+   usecase "create new\nenrollment authorisation\n(returns callback code)" as uc1
+   boundary "POST\n/enrollments/" as post_enrollment
+   uc1 -right-> post_enrollment
+   post_enrollment -down- emp_admin
+
+   usecase "view\nenrollment status\nand summary" as uc2
+   boundary "GET\n/enrollments/{id}" as get_enrollment
+   uc2 -right-> get_enrollment
+   get_enrollment -down- emp_admin
+
+   usecase "view\nevent summary" as uc3
+   boundary "GET\n/enrollments/{id}/journal" as get_journal
+   uc3 -right-> get_journal
+   get_journal -right- emp_admin
+
+   usecase "view\nevent detail\ne.g. micro-credential" as uc5
+   boundary "GET\n/enrollments/{id}/journal/{id}" as get_event
+   uc5 -right-> get_event
+   get_event -up- emp_admin
+
+   actor "Aged\nCare\nProvider" as ac
+   ac -up-> uc1
+   ac -right-> uc2
+   ac -down-> uc3
+   ac -down-> uc5
+
+   actor "Training\nProvider" as tp #grey
+   usecase "dispatch\ntraining event" as uc4 #grey
+   boundary "POST\n/callbacks/{enrollmentId}" as cbapi #grey
+   tp -right-> uc4 #grey
+   uc4 -right-> cbapi #grey
+   cbapi -down- cbh #grey
+
+@enduml
