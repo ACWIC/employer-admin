@@ -50,9 +50,7 @@ def get_enrolment_status(enrolment_id: str):
       that relate to state changes.
     * use these message-types to calculate the current state
     """
-    use_case = ges.GetEnrolmentStatus(
-        enrolment_repo=enrolment_repo
-    )
+    use_case = ges.GetEnrolmentStatus(enrolment_repo=enrolment_repo)
     response = use_case.execute(enrolment_id)
     if bool(response) is False:  # If request failed
         raise HTTPException(status_code=response.type.value, detail=response.message)
