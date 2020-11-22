@@ -15,14 +15,18 @@ enrolment_repo = S3EnrolmentRepo()
 @router.post("/enrolments")
 def create_enrolment(inputs: NewEnrolmentRequest):
     """
-    The Employer pre-registers a new Enrolment so callbacks can be received
-
-    The assumption is that the employer generates a unique *enrolment_id*
-    in some source system they control (LMS, HRMS, etc),
-    and registers it with this microservice.
-    This allows the microservice to generate keys,
-    and prepare to receive callbacks from the training provider
-    about this enrolment.
+    <p>
+    Aged Care Provider (employer) can create a new enrolment in their system.\n
+    They do this before they send a message to the Training Provider asking them to enrol their staff member as a student.\n
+    The reason they do it before is so that, when the Training Provider sends callbacks
+    (using the enrolment_id and secret key),\n
+    the employer is able to:
+    <ul>
+      <li>know which enrolment the callback is about (because enrolment_id matches)</li>
+      <li>know the right person is making the callback, it's not spam (because they know the key)</li>
+    </ul>
+    <b>internal_reference</b> a unique, non-empty string for employer_reference.\n
+    </p>
     """
     use_case = ce.CreateNewEnrolment(enrolment_repo=enrolment_repo)
     response = use_case.execute(inputs)
@@ -33,6 +37,19 @@ def create_enrolment(inputs: NewEnrolmentRequest):
 
 @router.get("/enrolments/{enrolment_id}")
 def get_enrolment(enrolment_id: str):
+    """
+    <p>
+    Aged Care Provider (employer) can view enrolment they posted.\n
+    He will get,
+    <ol>
+      <li><b>enrolment_id</b> identifier for enrolment</li>
+      <li><b>shared_secret</b> to recieve callback</li>
+      <li><b>internal_reference</b> employer_reference</li>
+      <li><b>created</b> date and time when the enrolment was created</li>
+    </ol>
+    <b>internal_reference</b> a unique, non-empty string for employer_reference.\n
+    </p>
+    """
     use_case = ge.GetEnrolmentByID(enrolment_repo=enrolment_repo)
     response = use_case.execute(enrolment_id)
     if bool(response) is False:  # If request failed
@@ -42,13 +59,17 @@ def get_enrolment(enrolment_id: str):
 
 @router.get("/enrolments/{enrolment_id}/status")
 def get_enrolment_status(enrolment_id: str):
-    """Return the current status of the given enrolment
-    This relies on certain callbacks
-    with payloads that describe state-changes in the enrolment.
-
-    * negotiate a state-chart and set of message-types
-      that relate to state changes.
-    * use these message-types to calculate the current state
+    """
+    <p>
+    Aged Care Provider (employer) can view current status of the enrolment.\n
+    The current status is derived from the callbacks.\n
+    In the future we will have various status attributes based on specific types of messages\n
+    but that's not designed yet. So for now, some simple attributes saying:
+    <ul>
+      <li>how many callbacks have been received</li>
+      <li>when the most recent callback was received</li>
+    </ul>
+    </p>
     """
     use_case = ges.GetEnrolmentStatus(enrolment_repo=enrolment_repo)
     response = use_case.execute(enrolment_id)
@@ -61,6 +82,17 @@ def get_enrolment_status(enrolment_id: str):
 def get_callbacks_list_for_enrolment(
     enrolment_id: str,
 ):
+    """
+    <p>
+    Aged Care Provider (employer) can view list of callbacks for an enrolment\n
+    Not the callbacks themselves, just a list of:
+    <ul>
+      <li>date/time it was received</li>
+      <li>callback_id</li>
+    </ul>
+    If there have been 0 callbacks, the list will be empty.
+    </p>
+    """
     use_case = gcl.GetCallbacksList(enrolment_repo=enrolment_repo)
     response = use_case.execute(enrolment_id)
     if bool(response) is False:  # If request failed
@@ -71,7 +103,19 @@ def get_callbacks_list_for_enrolment(
 @router.get("/enrolments/{enrolment_id}/journal/{callback_id}")
 def get_callback_for_enrolment(enrolment_id: str, callback_id):
     """
-    Returns callback details for an callback of an enrolment
+    <p>
+    Aged Care Provider (employer) can view callback details for an enrolment\n
+    He will get,
+    <ol>
+      <li><b>callback_id</b> identifier for enrolment</li>
+      <li><b>enrolment_id</b> identifier for callback</li>
+      <li><b>shared_secret</b> for verification</li>
+      <li><b>received</b> date and time when the callback was received</li>
+      <li><b>tp_sequence</b> sequence number from training provider source-system.
+      These are used for sorting in the order of sender’s intent.</li>
+      <li><b>payload</b> required</li>
+    </ol>
+    </p>
     """
     use_case = gc.GetCallback(enrolment_repo=enrolment_repo)
     response = use_case.execute(enrolment_id, callback_id)
