@@ -17,7 +17,8 @@ def create_enrolment(inputs: NewEnrolmentRequest):
     """
     <p>
     Aged Care Provider (employer) can create a new enrolment in their system.\n
-    They do this before they send a message to the Training Provider asking them to enrol their staff member as a student.\n
+    They do this before they send a message to the Training Provider asking them
+    to enrol their staff member as a student.\n
     The reason they do it before is so that, when the Training Provider sends callbacks
     (using the enrolment_id and secret key),\n
     the employer is able to:
@@ -47,7 +48,6 @@ def get_enrolment(enrolment_id: str):
       <li><b>internal_reference</b> employer_reference</li>
       <li><b>created</b> date and time when the enrolment was created</li>
     </ol>
-    <b>internal_reference</b> a unique, non-empty string for employer_reference.\n
     </p>
     """
     use_case = ge.GetEnrolmentByID(enrolment_repo=enrolment_repo)
@@ -107,8 +107,8 @@ def get_callback_for_enrolment(enrolment_id: str, callback_id):
     Aged Care Provider (employer) can view callback details for an enrolment\n
     He will get,
     <ol>
-      <li><b>callback_id</b> identifier for enrolment</li>
-      <li><b>enrolment_id</b> identifier for callback</li>
+      <li><b>callback_id</b> identifier for callback</li>
+      <li><b>enrolment_id</b> identifier for enrolment</li>
       <li><b>shared_secret</b> for verification</li>
       <li><b>received</b> date and time when the callback was received</li>
       <li><b>tp_sequence</b> sequence number from training provider source-system.
