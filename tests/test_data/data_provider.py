@@ -1,6 +1,6 @@
 import datetime
 
-from app.domain.entities.callback import Callback
+from app.domain.entities.callback import Attachment, Callback
 from app.domain.entities.enrolment import Enrolment
 from app.requests.enrolment_requests import NewEnrolmentRequest
 from app.utils.random import Random
@@ -90,19 +90,39 @@ class DataProvider:
             callback_id=self.callback_id,
             enrolment_id=self.enrolment_id,
             shared_secret=self.shared_secret,
-            tp_sequence=0,
             received=self.received,
-            payload={},
+            sender_sequence=0,
+            message_type_version="test",
+            structured_data=b"eyJ0ZXN0IjogImRhdGEifQ==",
+            # byte of '{"test": "data"}'
         )
-
         self.sample_callback1 = Callback(
             callback_id=self.callback_id1,
             enrolment_id=self.enrolment_id,
             shared_secret=self.shared_secret,
-            tp_sequence=0,
             received=self.received,
-            payload={},
+            sender_sequence=1,
+            message_type_version="test",
+            structured_data=b"test data",
         )
+
+        self.attachment = Attachment.from_dict(
+            {"content": b"test_data", "name": "dummy.txt"}
+        )
+        self.sample_callback_with_attachment = Callback(
+            callback_id=self.callback_id,
+            enrolment_id=self.enrolment_id,
+            shared_secret=self.shared_secret,
+            received=self.received,
+            sender_sequence=0,
+            message_type_version="test",
+            structured_data=b"eyJ0ZXN0IjogImRhdGEifQ==",
+            # byte of '{"test": "data"}'
+            attachments=[self.attachment],
+        )
+        self.sample_callback_dict = self.sample_callback.dict()
+        self.sample_get_callback_list = {"callbacks_list": [self.sample_callback]}
+        self.sample_empty_callback_list = {"callbacks_list": []}
 
         self.sample_enrolment_request = NewEnrolmentRequest(
             internal_reference=self.internal_reference
