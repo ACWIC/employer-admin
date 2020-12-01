@@ -2,6 +2,7 @@ import datetime
 
 from app.domain.entities.callback import Callback
 from app.domain.entities.enrolment import Enrolment
+from app.requests.enrolment_requests import NewEnrolmentRequest
 from app.utils.random import Random
 
 
@@ -50,6 +51,18 @@ class DataProvider:
             {"callback_id": callback_id, "received": received1},
         ]
     }
+    callbacks_list1_json = {
+        "callbacks_list": [
+            {
+                "callback_id": callback_id,
+                "received": received.strftime("%Y-%m-%dT%H:%M:%S.%f"),
+            },
+            {
+                "callback_id": callback_id,
+                "received": received1.strftime("%Y-%m-%dT%H:%M:%S.%f"),
+            },
+        ]
+    }
 
     def __init__(self):
         self.sample_enrolment = Enrolment(
@@ -89,4 +102,8 @@ class DataProvider:
             tp_sequence=0,
             received=self.received,
             payload={},
+        )
+
+        self.sample_enrolment_request = NewEnrolmentRequest(
+            internal_reference=self.internal_reference
         )

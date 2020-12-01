@@ -20,14 +20,15 @@ services:
     ports:
       - "8082:8080"
     env_file:
-      - ./.env
+        - ./.envs/.local/.minio
+        - ./.envs/.local/.env
     depends_on:
       - minio
 
   minio:
     image: minio/minio:latest
     ports:
-      - "9001:9000"
+      - "9002:9000"
     environment:
       MINIO_ACCESS_KEY: ACCESS-KEY
       MINIO_SECRET_KEY: MY-SECRET
