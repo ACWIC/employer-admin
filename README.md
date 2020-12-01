@@ -4,29 +4,27 @@
 
 This is a reference implementation of a proposed API enabling Aged Care
 providers to interact with training providers in a standardised way.
-
-
 Specifically, it provides the endpoints for registering a proposed
 enrolment and accessing information sent to the employer, by the
 training provider.
 
+See the Swagger API documentation:
+
+* [Development version](https://ngkkz39vx8.execute-api.us-east-1.amazonaws.com/dev/admin/docs)
+* [Preview version](https://prekb2sflh.execute-api.us-east-1.amazonaws.com/prod/admin/docs)
+
 This is a companion service to
 - [Employer Callback](https://github.com/ACWIC/employer-callback)
 
-[DEVELOPMENT.md](DEVELOPMENT.md) and [DEPLOYMENT.md](DEPLOYMENT.md)
-contain information about running
-the software and making changes to it.
+See these files:
 
-There is a test endpoint with a self-documenting API specification
+* [DEPLOYMENT.md](DEPLOYMENT.md) how to run the software
+* [DEVELOPMENT.md](DEVELOPMENT.md) how to make changes to the software
 
-[Dev](https://ngkkz39vx8.execute-api.us-east-1.amazonaws.com/dev/admin/docs)
-[Prod](https://prekb2sflh.execute-api.us-east-1.amazonaws.com/prod/admin/docs)
-
-This is equivalent to what you will have running locally
-if you create a local development environment
-(per [DEVELOPMENT.md](DEVELOPMENT.md))
-
-The test endpoint is continuously deployed from the `main` branch in this
+The Development version is continuously deployed from the `main` branch in this
 repository, so should be considered unstable.
 It is also completely open (do not require authentication),
 which is not a realistic simulation of any kind of production environment.
+
+For more information about running this service, see the
+[Aged Care Provider Integration Guide](https://acwic-employer-coordinator.readthedocs.io).
