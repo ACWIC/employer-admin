@@ -35,7 +35,7 @@ one or many Training Providers.
 Examples of how to deploy this microservice
 (along with the employer-callback)
 are documented in the
-[Aged Care Provider Deployment Guide](https://acwic-employer-coordinator.readthedocs.io/).
+[Aged Care Provider Integration Guide](https://acwic-employer-coordinator.readthedocs.io/).
 
 The reference implementation
 for this microservice is open source
